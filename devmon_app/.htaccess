@@ -1,0 +1,15 @@
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+RewriteBase /
+
+RewriteRule ^add$ php/add.php [L]
+RewriteRule ^Chart$ php/Chart.php [L]
+RewriteRule ^current$ php/current.php [L]
+RewriteRule ^stats$ php/stats.php [L]
+</IfModule>

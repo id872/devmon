@@ -1,0 +1,49 @@
+canvas {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.center {
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+}
+
+#chartsContainer {
+    width: 85%;
+}
+
+#fBtnContainer {
+    height: 250;
+}
+
+body {
+    margin: 0;
+}
+
+.navBar {
+    overflow: hidden;
+    background-color: #A0ADAE;
+    margin-bottom: 5px;
+}
+
+.navBar a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 6px 18px;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+.navBar a:hover {
+    background-color: #55C2C8;
+    color: black;
+}
+
+.active {
+    background-color: #556DC8;
+    color: white;
+}
