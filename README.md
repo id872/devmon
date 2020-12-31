@@ -22,24 +22,24 @@ The application has two main goals – Save devices data in the DB and present d
 
 The application decrypts encrypted JSON POST data and inserts devices data into MySQL DB. Charts are generated from data stored in the DB. Application structure was divided into two sections:
 
-1. Sql – containing SQL Request class definition for SQL query execution and device data getters from SQL tables.
-2. Chartgenerators – here are generators for devices data presentation in graphical form. The input data is taken from SQL tables. Chart data is prepared as JSON format for Chart.js library.
+1. Sql – containing SQL Request class definition for SQL query execution and device data getters.
+2. Chartgenerators – here are generators for devices data presentation in graphical form. The device data is taken from SQL tables. Chart data is prepared as JSON format for Chart.js library.
 
 There is no need to refresh page to change data scope or type. It works with AJAX requests.
 
-To handle new device data for saving/presentation, three things need to be done:
+To handle new device data for saving/presentation, following need to be done:
 
-* (SQL Schema) new device must be added into “devices” table, table for new device readouts must be created
+* (*DeviceDataSaver.php*) new device data ID must be added in the *JSON_DATA_TYPE_IDS* array, insert function for new device data has to be created
+* (SQL DB) new device must be added into “devices” table, readouts table for new device must be created
 * (**1**) device data getter implementation
-* (**2**) chart data generator
-* and new ID must be added in JSON_DATA_TYPE_IDS the same as in the SQL Schema (DeviceDataSaver.php)
+* (**2**) chart data generator implementation
 
 For sure there is a room for improvement to simplify it, but for now it has to be done in that way.
 
-SQL schema is defined to handle many devices from many users.
+SQL DB is defined to handle many devices from many users. See the *sql_create.sql* in the *sql_db*.
 
 “users” table contains *api_hash* used to determine *api_key* for data decryption for particular user. [At the logger side](https://github.com/id872/data_logger) (which prepares encrypted JSON request) need to be the same pair defined in a configuration, otherwise the devices data will not be decrypted and stored in DB – please see the device logger project for details.
-There is also *user_password_hash* (bcrypt hash) for additional authentication – required only for inserting data into DB. You can see an authentication steps in the add.php file. Check also .htaccess where rewrite engine rules were defined.
+There is also *user_password_hash* (bcrypt hash) for additional authentication – required only for inserting data into DB. You can see an authentication steps in the *add.php* file. Check also .htaccess where rewrite engine rules were defined.
 
 Devices names defined in a logger configuration must be the same as those defined in the DB.
 
