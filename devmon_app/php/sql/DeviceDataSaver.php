@@ -7,8 +7,8 @@ class DeviceDataSaver extends SqlRequest
 {
     const MAX_OMMIT_INSERT_COUNT = 1;
     const JSON_DATA_TYPE_IDS = array(
-        'power_readouts' => 0,
-        'temperature_readouts' => 1,
+        'santerno_readouts' => 0,
+        'ds18b20_readouts' => 1,
         'purifier_readouts' => 2,
         'tasmota_readouts' => 3
     );
@@ -161,11 +161,11 @@ class DeviceDataSaver extends SqlRequest
             }
             else
             {
-                if ($dataType === 'power_readouts')
+                if ($dataType === 'santerno_readouts')
                 {
                     $queryOK = $this->insertPowerData($readout);
                 }
-                else if ($dataType === 'temperature_readouts')
+                else if ($dataType === 'ds18b20_readouts')
                 {
                     $queryOK = $this->insertTemperatureData($readout);
                 }
