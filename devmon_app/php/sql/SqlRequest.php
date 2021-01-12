@@ -2,7 +2,7 @@
 
 class SqlRequest
 {
-    const CONFIG_PATH = '../../../../m_cfg/config.ini'; 
+    const CONFIG_PATH = '../../../sql_db/db_config.ini'; 
 
     protected $Connection = NULL; 
     protected $UserData = NULL;

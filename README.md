@@ -37,6 +37,7 @@ To handle new device data for saving/presentation, following need to be done:
 For sure there is a room for improvement to simplify it, but for now it has to be done in that way.
 
 SQL DB is defined to handle many devices from many users. See the *sql_create.sql* in the *sql_db*.
+SQL DB configuration *sql_db.ini* is in the *sql_db*. It is used by *SqlRequest.php*.
 
 “users” table contains *api_hash* used to determine *api_key* for data decryption for particular user. [At the logger side](https://github.com/id872/data_logger) (which prepares encrypted JSON request) need to be the same pair defined in a configuration, otherwise the devices data will not be decrypted and stored in DB – please see the device logger project for details.
 There is also *user_password_hash* (bcrypt hash) for additional authentication – required only for inserting data into DB. You can see an authentication steps in the *add.php* file. Check also .htaccess where rewrite engine rules were defined.
