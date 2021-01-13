@@ -13,6 +13,10 @@ class SanternoStatsChartJS
 
     public function PrepareChart()
     {
+        if (!$this->JsonData) {
+            return array();
+        }
+
         $charts = array();
 
         foreach ($this->JsonData as $key => $vals)

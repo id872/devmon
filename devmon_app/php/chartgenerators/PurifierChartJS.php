@@ -13,6 +13,10 @@ class PurifierChartJS
 
     public function PrepareChart()
     {
+        if (!$this->JsonData) {
+            return array();
+        }
+
         return array(
             "purifierPurityData" => $this->PreparePurifierPurityData(),
             "purifierTemperatureData" => $this->PreparePurifierTemperatureData()

@@ -13,6 +13,10 @@ class DS18B20ChartJS
 
     public function PrepareChart()
     {
+        if (!$this->JsonData) {
+            return array();
+        }
+
         return array(
             "da18b20TemperatureData" => $this->PrepareDs18b20SensorTemperatures()
         );

@@ -13,6 +13,10 @@ class SanternoChartJS
 
     public function PrepareChart()
     {
+        if (!$this->JsonData) {
+            return array();
+        }
+
         return array(
             "santernoAcData" => $this->PrepareAcPowerData(),
             "santernoDcData" => $this->PrepareDcPowerData(),

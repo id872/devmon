@@ -5,8 +5,10 @@ function sendAJAX(url, params){
         dataType: "json",
         data: params,
         success: function (jsonResp) {
-            document.title = "Monitoring - Charts loaded";
-            drawChartJS(jsonResp);
+            if (jsonResp && Object.keys(jsonResp).length > 0) {
+                document.title = "Monitoring - Charts loaded";
+                drawChartJS(jsonResp);
+            }
         },
         error: function(){
             document.title = "Monitoring - reception error";

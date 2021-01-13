@@ -13,6 +13,10 @@ class TasmotaChartJS
 
     public function PrepareChart()
     {
+        if (!$this->JsonData) {
+            return array();
+        }
+
         return array(
             "tasmotaPowerData" => $this->PrepareTasmotaPowerData(),
             "tasmotaVolgateCurrentData" => $this->PrepareTasmotaCurrentVoltageData()
