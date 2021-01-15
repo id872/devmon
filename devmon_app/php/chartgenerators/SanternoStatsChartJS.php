@@ -1,28 +1,25 @@
 <?php
-
-require_once('utils/ChartJSHelper.php');
+require_once 'utils/ChartJSHelper.php';
 
 class SanternoStatsChartJS
 {
+
     private $JsonData = NULL;
 
     function __construct(&$jsonData)
     {
-        $this->JsonData =& $jsonData;
+        $this->JsonData = &$jsonData;
     }
 
     public function PrepareChart()
     {
-        if (!$this->JsonData) {
+        if (! $this->JsonData)
             return array();
-        }
 
         $charts = array();
 
         foreach ($this->JsonData as $key => $vals)
-        {
             $charts[sprintf("santernoMonthStatsData_%s", $key)] = $this->PrepareSanternoMonthYearStatsData($key, $vals);
-        }
 
         return $charts;
     }
@@ -44,29 +41,23 @@ class SanternoStatsChartJS
 
         $dataSetIdx = 0;
 
-        foreach($head_keys as $key)
-        {
+        foreach ($head_keys as $key) {
             if (strpos($key, "_kwh") > 0)
-            {
                 $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y', $dataSetIdx++);
-            }
         }
 
         $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet('Power Total', 'y', $dataSetIdx++);
         $chartConfig['options'] = ChartJSHelper::GetOptions($optCfg);
 
         $yearTotal = 0;
-        foreach ($data as $key => $vals)
-        {
+        foreach ($data as $key => $vals) {
             $chartConfig['data']['labels'][] = $key;
 
             $dataSetIdx = 0;
             $powerTotal = 0;
 
-            foreach ($vals as $key => $val)
-            {
-                if (strpos($key, "_kwh") > 0)
-                {
+            foreach ($vals as $key => $val) {
+                if (strpos($key, "_kwh") > 0) {
                     array_push($chartConfig['data']['datasets'][$dataSetIdx++]['data'], $val);
                     $powerTotal += $val;
                 }

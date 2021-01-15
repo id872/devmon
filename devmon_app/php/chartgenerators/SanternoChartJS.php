@@ -1,26 +1,25 @@
 <?php
-
-require_once('utils/ChartJSHelper.php');
+require_once 'utils/ChartJSHelper.php';
 
 class SanternoChartJS
 {
+
     private $JsonData = NULL;
 
     function __construct(&$jsonData)
     {
-        $this->JsonData =& $jsonData;
+        $this->JsonData = &$jsonData;
     }
 
     public function PrepareChart()
     {
-        if (!$this->JsonData) {
+        if (! $this->JsonData)
             return array();
-        }
 
         return array(
             "santernoAcData" => $this->PrepareAcPowerData(),
             "santernoDcData" => $this->PrepareDcPowerData(),
-            "santernoTemperatureData" => $this->PrepareInverterTemperatureData(),
+            "santernoTemperatureData" => $this->PrepareInverterTemperatureData()
         );
     }
 
@@ -42,27 +41,21 @@ class SanternoChartJS
 
         $acDataSetIdx = 0;
 
-        foreach($head_keys as $key)
-        {
+        foreach ($head_keys as $key) {
             if (strpos($key, "_ac_power") > 0)
-            {
                 $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y', $acDataSetIdx++);
-            }
         }
 
         $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet('Power Total', 'y', $acDataSetIdx++);
 
         $total = 0;
 
-        foreach ($this->JsonData as $key => $vals)
-        {
+        foreach ($this->JsonData as $key => $vals) {
             $chartConfig['data']['labels'][] = $key;
             $acDataSetIdx = 0;
             $acSum = 0;
-            foreach ($vals as $key => $val)
-            {
-                if (strpos($key, "_ac_power") > 0)
-                {
+            foreach ($vals as $key => $val) {
+                if (strpos($key, "_ac_power") > 0) {
                     $chartConfig['data']['datasets'][$acDataSetIdx++]['data'][] = $val;
                     $acSum += $val;
                     $total += $val;
@@ -72,7 +65,7 @@ class SanternoChartJS
                 }
             }
 
-            $chartConfig['data']['datasets'][$acDataSetIdx++]['data'][]  = $acSum;
+            $chartConfig['data']['datasets'][$acDataSetIdx++]['data'][] = $acSum;
         }
 
         $chartConfig['options'] = ChartJSHelper::GetOptions($optCfg);
@@ -83,8 +76,7 @@ class SanternoChartJS
 
         $chartConfig['options']['title'] = array(
             'display' => true,
-            'text' => sprintf("[2x Santerno 3kW] -> AC | Max %d W | Avg %.2f W | Produced %.2f kWh |",
-            $max, $avg, $prod)
+            'text' => sprintf("[2x Santerno 3kW] -> AC | Max %d W | Avg %.2f W | Produced %.2f kWh |", $max, $avg, $prod)
         );
 
         return $chartConfig;
@@ -109,37 +101,27 @@ class SanternoChartJS
         $chartConfig['type'] = 'line';
         $chartConfig['data']['labels'] = array();
 
-
         $head_keys = array_keys(current($this->JsonData));
 
         $dcDataSetIdx = 0;
 
-        foreach($head_keys as $key)
-        {
+        foreach ($head_keys as $key) {
             if (strpos($key, "_dc_voltage") > 0)
-            {
                 $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y1', $dcDataSetIdx++);
-            }
+
             if (strpos($key, "_dc_current") > 0)
-            {
                 $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y2', $dcDataSetIdx++);
-            }
         }
 
         $chartConfig['options'] = ChartJSHelper::GetOptions($optCfg);
 
-        foreach ($this->JsonData as $key => $vals)
-        {
+        foreach ($this->JsonData as $key => $vals) {
             $dcDataSetIdx = 0;
             $chartConfig['data']['labels'][] = $key;
 
-            foreach ($vals as $key => $val)
-            {
-                if (strpos($key, "_dc_voltage") > 0 ||
-                    strpos($key, "_dc_current") > 0)
-                {
+            foreach ($vals as $key => $val) {
+                if (strpos($key, "_dc_voltage") > 0 || strpos($key, "_dc_current") > 0)
                     $chartConfig['data']['datasets'][$dcDataSetIdx++]['data'][] = $val;
-                }
             }
         }
 
@@ -168,29 +150,20 @@ class SanternoChartJS
 
         $tempDataSetIdx = 0;
 
-        foreach($head_keys as $key)
-        {
-            if (strpos($key, "cpu_temperature") > 0 || 
-                strpos($key, "radiator_temperature") > 0)
-            {
+        foreach ($head_keys as $key) {
+            if (strpos($key, "cpu_temperature") > 0 || strpos($key, "radiator_temperature") > 0)
                 $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y', $tempDataSetIdx++);
-            }
         }
 
         $chartConfig['options'] = ChartJSHelper::GetOptions($optCfg);
 
-        foreach ($this->JsonData as $key => $vals)
-        {
+        foreach ($this->JsonData as $key => $vals) {
             $tempDataSetIdx = 0;
             $chartConfig['data']['labels'][] = $key;
 
-            foreach ($vals as $key => $val)
-            {
-                if (strpos($key, "cpu_temperature") > 0 ||
-                    strpos($key, "radiator_temperature") > 0)
-                {
+            foreach ($vals as $key => $val) {
+                if (strpos($key, "cpu_temperature") > 0 || strpos($key, "radiator_temperature") > 0)
                     $chartConfig['data']['datasets'][$tempDataSetIdx++]['data'][] = $val;
-                }
             }
         }
 

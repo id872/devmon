@@ -1,5 +1,4 @@
 <?php
-
 $page_template = '<!DOCTYPE html>
 <html>
 <head>

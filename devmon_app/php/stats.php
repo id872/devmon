@@ -28,7 +28,8 @@ $page_template = '<!DOCTYPE html>
 </body>
 </html>';
 
-function GenerateStatisticsPage(){
+function GenerateStatisticsPage()
+{
     global $page_template;
 
     return $page_template;

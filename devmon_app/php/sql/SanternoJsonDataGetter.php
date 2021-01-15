@@ -1,9 +1,9 @@
 <?php
-
-require_once('SqlRequest.php'); 
+require_once 'SqlRequest.php';
 
 class SanternoJsonDataGetter extends SqlRequest
 {
+
     public function getSanternoData($dateDay)
     {
         $dateFrom = sprintf('%s 00:00:00', $dateDay);
@@ -16,39 +16,33 @@ class SanternoJsonDataGetter extends SqlRequest
             WHERE L.readout_time BETWEEN ? AND ? AND D.user_id = (SELECT user_id FROM users WHERE user_name = ?)
             ORDER BY L.readout_time, D.dev_name';
 
-        if ($stmt = mysqli_prepare($this->Connection, $query))
-        {
+        if ($stmt = mysqli_prepare($this->Connection, $query)) {
             mysqli_stmt_bind_param($stmt, "sss", $dateFrom, $dateTo, $userName);
             mysqli_stmt_execute($stmt);
 
             $result = mysqli_stmt_get_result($stmt);
 
             if ($result === FALSE)
-            {
                 return FALSE;
-            }
 
             $rows = array();
 
-            while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-            {
+            while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
                 $dev_name = $row['dev_name'];
                 $readout_time = $row['readout_time'];
 
-                $rows[$readout_time][$dev_name.'_datetime'] = $readout_time;
-                $rows[$readout_time][$dev_name.'_ac_power'] = $row['ac_power'];
-                $rows[$readout_time][$dev_name.'_dc_current'] = $row['dc_current'];
-                $rows[$readout_time][$dev_name.'_dc_voltage'] = $row['dc_voltage'];
-                $rows[$readout_time][$dev_name.'_cpu_temperature'] = $row['cpu_temperature'];
-                $rows[$readout_time][$dev_name.'_radiator_temperature'] = $row['radiator_temperature'];
+                $rows[$readout_time][$dev_name . '_datetime'] = $readout_time;
+                $rows[$readout_time][$dev_name . '_ac_power'] = $row['ac_power'];
+                $rows[$readout_time][$dev_name . '_dc_current'] = $row['dc_current'];
+                $rows[$readout_time][$dev_name . '_dc_voltage'] = $row['dc_voltage'];
+                $rows[$readout_time][$dev_name . '_cpu_temperature'] = $row['cpu_temperature'];
+                $rows[$readout_time][$dev_name . '_radiator_temperature'] = $row['radiator_temperature'];
             }
 
             mysqli_stmt_close($stmt);
 
-            if (!empty($rows))
-            {
+            if (! empty($rows))
                 return $rows;
-            }
         }
         return FALSE;
     }
@@ -58,31 +52,25 @@ class SanternoJsonDataGetter extends SqlRequest
         $userName = $this->getUserData("user_name");
         $query = 'SELECT (SELECT dev_name FROM devices WHERE device_id = p.device_id) AS dev_name, YEAR(day_production) AS y, MONTH(day_production) AS m, SUM(kwh) AS kwh FROM `power_day_stats` p WHERE p.user_id = (SELECT user_id FROM users WHERE user_name = ?) GROUP BY device_id, YEAR(day_production), MONTH(day_production) ORDER BY y DESC, m, dev_name ASC';
 
-        if ($stmt = mysqli_prepare($this->Connection, $query))
-        {
+        if ($stmt = mysqli_prepare($this->Connection, $query)) {
             mysqli_stmt_bind_param($stmt, "s", $userName);
             mysqli_stmt_execute($stmt);
             $result = mysqli_stmt_get_result($stmt);
 
             if ($result === FALSE)
-            {
                 return FALSE;
-            }
 
-            while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-            {
+            while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
                 $devName = $row['dev_name'];
                 $yearMonth = sprintf('%d_%d', $row['y'], $row['m']);
 
-                $rows[$row['y']][$yearMonth][$devName.'_kwh'] = $row['kwh'];
+                $rows[$row['y']][$yearMonth][$devName . '_kwh'] = $row['kwh'];
             }
 
             mysqli_stmt_close($stmt);
 
-            if (!empty($rows))
-            {
+            if (! empty($rows))
                 return $rows;
-            }
         }
         return FALSE;
     }

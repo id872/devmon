@@ -2,6 +2,7 @@
 
 class ChartJSHelper
 {
+
     static $COLORS = array(
         array(
             'bgColor' => 'rgba(51, 102, 204, 0.2)',
@@ -65,9 +66,8 @@ class ChartJSHelper
 
         foreach ($yAxesCfg as $cfg) {
 
-            if (!array_key_exists('displayLines', $cfg)){
+            if (! array_key_exists('displayLines', $cfg))
                 $cfg['displayLines'] = true;
-            }
 
             $opts['scales']['yAxes'][] = array(
                 'gridLines' => array(

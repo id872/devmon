@@ -1,21 +1,20 @@
 <?php
-
-require_once('utils/ChartJSHelper.php');
+require_once 'utils/ChartJSHelper.php';
 
 class DS18B20ChartJS
 {
+
     private $JsonData = NULL;
 
     function __construct(&$jsonData)
     {
-        $this->JsonData =& $jsonData;
+        $this->JsonData = &$jsonData;
     }
 
     public function PrepareChart()
     {
-        if (!$this->JsonData) {
+        if (! $this->JsonData)
             return array();
-        }
 
         return array(
             "da18b20TemperatureData" => $this->PrepareDs18b20SensorTemperatures()
@@ -39,27 +38,20 @@ class DS18B20ChartJS
 
         $tDataSetIdx = 0;
 
-        foreach($head_keys as $key)
-        {
+        foreach ($head_keys as $key) {
             if (strpos($key, "_temperature") > 0)
-            {
                 $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y', $tDataSetIdx++);
-            }
         }
 
         $chartConfig['options'] = ChartJSHelper::GetOptions($optCfg);
 
-        foreach ($this->JsonData as $key => $vals)
-        {
+        foreach ($this->JsonData as $key => $vals) {
             array_push($chartConfig['data']['labels'], $key);
             $tDataSetIdx = 0;
 
-            foreach ($vals as $key => $val)
-            {
+            foreach ($vals as $key => $val) {
                 if (strpos($key, "_temperature") > 0)
-                {
                     array_push($chartConfig['data']['datasets'][$tDataSetIdx++]['data'], $val);
-                }
             }
         }
 
