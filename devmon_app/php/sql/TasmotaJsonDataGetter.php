@@ -4,7 +4,7 @@ require_once 'SqlRequest.php';
 class TasmotaJsonDataGetter extends SqlRequest
 {
 
-    public function getTasmotaData($dateFrom, $dateTo)
+    public function getData($dateFrom, $dateTo)
     {
         $dateFrom = sprintf('%s 00:00:00', $dateFrom);
         $dateTo = sprintf('%s 23:59:59', $dateTo);

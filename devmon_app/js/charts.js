@@ -19,7 +19,7 @@ function sendAJAX(url, params){
 
 function getChartsByDate(){
 
-    var type = parseInt(document.getElementById('dataTypeSelector').value);
+    var type = document.getElementById('dataTypeSelector').value;
     var dateFrom = document.getElementById('dateFrom').value;
     var dateTo = document.getElementById('dateTo').value;
     var hash = document.getElementById('userSelector').value
@@ -27,7 +27,7 @@ function getChartsByDate(){
     if (!dateFrom || !dateTo)
         return;
 
-    if (type === 0) {
+    if (type === 'santerno_readouts') {
         dateTo = dateFrom;
         document.getElementById('dateTo').value = dateFrom;
         document.getElementById('dateTo').readOnly = true;

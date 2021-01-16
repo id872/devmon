@@ -4,7 +4,7 @@ require_once 'SqlRequest.php';
 class SanternoJsonDataGetter extends SqlRequest
 {
 
-    public function getSanternoData($dateDay)
+    public function getData($dateDay)
     {
         $dateFrom = sprintf('%s 00:00:00', $dateDay);
         $dateTo = sprintf('%s 23:59:59', $dateDay);
@@ -47,7 +47,7 @@ class SanternoJsonDataGetter extends SqlRequest
         return FALSE;
     }
 
-    public function getSanternoMonthStatsData()
+    public function getMonthStatsData()
     {
         $userName = $this->getUserData("user_name");
         $query = 'SELECT (SELECT dev_name FROM devices WHERE device_id = p.device_id) AS dev_name, YEAR(day_production) AS y, MONTH(day_production) AS m, SUM(kwh) AS kwh FROM `power_day_stats` p WHERE p.user_id = (SELECT user_id FROM users WHERE user_name = ?) GROUP BY device_id, YEAR(day_production), MONTH(day_production) ORDER BY y DESC, m, dev_name ASC';

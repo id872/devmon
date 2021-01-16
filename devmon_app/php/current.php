@@ -17,10 +17,10 @@ $page_template = '<!DOCTYPE html>
 <input type="date" id="dateFrom" value="%1$s" onchange="getChartsByDate()"/>
 <input type="date" id="dateTo" value="%1$s" onchange="getChartsByDate()"/>
 <select id="dataTypeSelector" onchange="getChartsByDate()">
-<option value="0">Santerno PV Data</option>
-<option value="1">DS18B20 Data</option>
-<option value="2">Xiaomi AirPurifier</option>
-<option value="3">Tasmota Plug</option>
+<option value="santerno_readouts">Santerno PV Data</option>
+<option value="ds18b20_readouts">DS18B20 Data</option>
+<option value="purifier_readouts">Xiaomi AirPurifier</option>
+<option value="tasmota_readouts">Tasmota Plug</option>
 </select>
 <select id="userSelector">
 <option value="df373c7036e73d">RPI</option>

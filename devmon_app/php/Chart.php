@@ -18,21 +18,17 @@ function getChartData($dataType, $dateFrom, $dateTo, $userHash)
     if ($dateDiff > 30 || $dateDiff < 0)
         return NULL;
 
-    if ($dataType == 0) {
-        $sql = new SanternoJsonDataGetter($userHash);
-        $jsonData = $sql->getSanternoData($dateFrom);
+    if ($dataType === 'santerno_readouts') {
+        $jsonData = (new SanternoJsonDataGetter($userHash))->getData($dateFrom);
         $chartGenerator = new SanternoChartJS($jsonData);
-    } else if ($dataType == 1) {
-        $sql = new DS18B20JsonDataGetter($userHash);
-        $jsonData = $sql->getDS18B20Data($dateFrom, $dateTo);
+    } else if ($dataType === 'ds18b20_readouts') {
+        $jsonData = (new DS18B20JsonDataGetter($userHash))->getData($dateFrom, $dateTo);
         $chartGenerator = new DS18B20ChartJS($jsonData);
-    } else if ($dataType == 2) {
-        $sql = new PurifierJsonDataGetter($userHash);
-        $jsonData = $sql->getPurifierData($dateFrom, $dateTo);
+    } else if ($dataType === 'purifier_readouts') {
+        $jsonData = (new PurifierJsonDataGetter($userHash))->getData($dateFrom, $dateTo);
         $chartGenerator = new PurifierChartJS($jsonData);
-    } else if ($dataType == 3) {
-        $sql = new TasmotaJsonDataGetter($userHash);
-        $jsonData = $sql->getTasmotaData($dateFrom, $dateTo);
+    } else if ($dataType === 'tasmota_readouts') {
+        $jsonData = (new TasmotaJsonDataGetter($userHash))->getData($dateFrom, $dateTo);
         $chartGenerator = new TasmotaChartJS($jsonData);
     } else
         return json_encode(array(), JSON_NUMERIC_CHECK);
@@ -45,10 +41,8 @@ function getChartData($dataType, $dateFrom, $dateTo, $userHash)
 
 function getSanternoStatsChartData($userHash)
 {
-    $sql = new SanternoJsonDataGetter($userHash);
-    $jsonData = $sql->getSanternoMonthStatsData();
-    $chartGenerator = new SanternoStatsChartJS($jsonData);
-    return json_encode($chartGenerator->PrepareChart(), JSON_NUMERIC_CHECK);
+    $jsonData = (new SanternoJsonDataGetter($userHash))->getMonthStatsData();
+    return json_encode((new SanternoStatsChartJS($jsonData))->PrepareChart(), JSON_NUMERIC_CHECK);
 }
 
 if (isset($_POST["type"]) && isset($_POST["dateFrom"]) && isset($_POST["dateTo"]) && isset($_POST["hash"]))
