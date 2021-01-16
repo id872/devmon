@@ -23,8 +23,7 @@ $page_template = '<!DOCTYPE html>
 <option value="tasmota_readouts">Tasmota Plug</option>
 </select>
 <select id="userSelector">
-<option value="df373c7036e73d">RPI</option>
-<option value="a0e1f8b095a1ab">PIZ</option>
+<option value="831fe1b07d15ff">PI_Zero</option>
 </select>
 <button onclick="getChartsByDate()">&#x21BB;</button>
 </center>
