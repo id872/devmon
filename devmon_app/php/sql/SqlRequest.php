@@ -17,9 +17,6 @@ class SqlRequest
             exit(1);
 
         $this->UserData = $this->initializeUserData($userHash);
-
-        if (! $this->UserData)
-            exit(1);
     }
 
     function __destruct()
@@ -39,6 +36,9 @@ class SqlRequest
 
     private function initializeUserData($userHash)
     {
+        if ($userHash === NULL)
+            return NULL;
+
         $query = "SELECT D.dev_name, D.device_id, U.user_name, U.user_id, U.user_password_hash, U.api_key FROM users U 
             LEFT JOIN devices D on (D.user_id = U.user_id) where INSTR(api_hash, ?) > 0";
 
@@ -68,7 +68,7 @@ class SqlRequest
 
     protected function getUserData($key)
     {
-        if (array_key_exists($key, $this->UserData[0]))
+        if (is_array($this->UserData) && array_key_exists(0, $this->UserData) && array_key_exists($key, $this->UserData[0]))
             return $this->UserData[0][$key];
 
         return NULL;

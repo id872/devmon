@@ -1,4 +1,7 @@
 <?php
+
+require_once 'sql/UsersGetter.php';
+
 $page_template = '<!DOCTYPE html>
 <html>
 <head>
@@ -23,7 +26,7 @@ $page_template = '<!DOCTYPE html>
 <option value="tasmota_readouts">Tasmota Plug</option>
 </select>
 <select id="userSelector">
-<option value="831fe1b07d15ff">PI_Zero</option>
+%2$s
 </select>
 <button onclick="getChartsByDate()">&#x21BB;</button>
 </center>
@@ -33,12 +36,24 @@ $page_template = '<!DOCTYPE html>
 </body>
 </html>';
 
+function GetUsers()
+{
+    $data = (new UsersGetter(NULL))->getData();
+    $strPattern = '<option value="%1$s">%2$s</option>';
+    $userOptions = array();
+
+    foreach($data as $row) 
+        $userOptions[] = sprintf($strPattern, $row['api_hash'], $row['user_name']);
+
+    return join('', $userOptions);
+}
+
 function GenerateCurrentPage()
 {
     global $page_template;
     $today = date("Y-m-d");
 
-    return sprintf($page_template, $today);
+    return sprintf($page_template, $today, GetUsers());
 }
 
 echo GenerateCurrentPage();

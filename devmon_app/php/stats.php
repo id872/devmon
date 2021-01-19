@@ -1,4 +1,7 @@
 <?php
+
+require_once 'sql/UsersGetter.php';
+
 $page_template = '<!DOCTYPE html>
 <html>
 <head>
@@ -15,8 +18,7 @@ $page_template = '<!DOCTYPE html>
 </div>
 <center>
 <select id="userSelector">
-<option value="df373c7036e73d">RPI</option>
-<option value="a0e1f8b095a1ab">PIZ</option>
+%1$s
 </select>
 <button onclick="getSanternoStatsCharts()">&#x21BB;</button>
 </center>
@@ -28,11 +30,23 @@ $page_template = '<!DOCTYPE html>
 </body>
 </html>';
 
+function GetUsers()
+{
+    $data = (new UsersGetter(NULL))->getData();
+    $strPattern = '<option value="%1$s">%2$s</option>';
+    $userOptions = array();
+
+    foreach($data as $row) 
+        $userOptions[] = sprintf($strPattern, $row['api_hash'], $row['user_name']);
+
+    return join('', $userOptions);
+}
+
 function GenerateStatisticsPage()
 {
     global $page_template;
 
-    return $page_template;
+    return sprintf($page_template, GetUsers());
 }
 
 echo GenerateStatisticsPage();
