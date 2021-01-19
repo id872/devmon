@@ -8,7 +8,8 @@ function sendAJAX(url, params){
             if (jsonResp && Object.keys(jsonResp).length > 0) {
                 document.title = "Monitoring - Charts loaded";
                 drawChartJS(jsonResp);
-            }
+            } else
+                document.title = "Monitoring - NO DATA";
         },
         error: function(){
             document.title = "Monitoring - reception error";
