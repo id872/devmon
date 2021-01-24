@@ -29,8 +29,8 @@ There is no need to refresh page to change data scope or type. It works with AJA
 
 To handle new device data for saving/presentation, following need to be done:
 
-* (*DeviceDataSaver.php*) new device data ID must be added in the *JSON_DATA_TYPE_IDS* array, insert function for new device data has to be created
-* (SQL DB) new device must be added into “devices” table, readouts table for new device must be created
+* (*DeviceDataSaver.php*) insert function for new device data has to be created and used
+* (SQL DB) new device must be added into “devices” table, new device data type must be added into “dev_data_type” table, readouts table for new device must be created
 * (**1**) device data getter implementation
 * (**2**) chart data generator implementation
 
