@@ -1,5 +1,6 @@
 <?php
 
+require_once 'sql/DataTypesGetter.php';
 require_once 'sql/UsersGetter.php';
 
 $page_template = '<!DOCTYPE html>
@@ -20,13 +21,10 @@ $page_template = '<!DOCTYPE html>
 <input type="date" id="dateFrom" value="%1$s" onchange="getChartsByDate()"/>
 <input type="date" id="dateTo" value="%1$s" onchange="getChartsByDate()"/>
 <select id="dataTypeSelector" onchange="getChartsByDate()">
-<option value="santerno_readouts">Santerno PV Data</option>
-<option value="ds18b20_readouts">DS18B20 Data</option>
-<option value="purifier_readouts">Xiaomi AirPurifier</option>
-<option value="tasmota_readouts">Tasmota Plug</option>
+%2$s
 </select>
 <select id="userSelector">
-%2$s
+%3$s
 </select>
 <button onclick="getChartsByDate()">&#x21BB;</button>
 </center>
@@ -36,16 +34,36 @@ $page_template = '<!DOCTYPE html>
 </body>
 </html>';
 
+function GetDataTypes()
+{
+    $data = (new DataTypesGetter(NULL))->getData();
+
+    if ($data === FALSE)
+        return '';
+
+    $strPattern = '<option value="%1$s">%2$s</option>';
+    $options = array();
+
+    foreach($data as $row)
+        $options[] = sprintf($strPattern, $row['dt_name'], $row['dt_description']);
+
+    return join('', $options);
+}
+
 function GetUsers()
 {
     $data = (new UsersGetter(NULL))->getData();
+
+    if ($data === FALSE)
+        return '';
+
     $strPattern = '<option value="%1$s">%2$s</option>';
-    $userOptions = array();
+    $options = array();
 
-    foreach($data as $row) 
-        $userOptions[] = sprintf($strPattern, $row['api_hash'], $row['user_name']);
+    foreach($data as $row)
+        $options[] = sprintf($strPattern, $row['api_hash'], $row['user_name']);
 
-    return join('', $userOptions);
+    return join('', $options);
 }
 
 function GenerateCurrentPage()
@@ -53,7 +71,7 @@ function GenerateCurrentPage()
     global $page_template;
     $today = date("Y-m-d");
 
-    return sprintf($page_template, $today, GetUsers());
+    return sprintf($page_template, $today, GetDataTypes() ,GetUsers());
 }
 
 echo GenerateCurrentPage();

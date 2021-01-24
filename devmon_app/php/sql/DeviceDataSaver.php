@@ -7,26 +7,19 @@ class DeviceDataSaver extends SqlRequest
 
     const MAX_OMMIT_INSERT_COUNT = 1;
 
-    const JSON_DATA_TYPE_IDS = array(
-        'santerno_readouts' => 0,
-        'ds18b20_readouts' => 1,
-        'purifier_readouts' => 2,
-        'tasmota_readouts' => 3
-    );
-
-    private function insertReadoutTime($dev_data_type, $readout)
+    private function insertReadoutTime($dataTypeName, $readout)
     {
         $queryOK = FALSE;
         $userID = $this->getUserData("user_id");
 
-        $query = "INSERT INTO data_logs (user_id, dev_data_type, readout_time) 
-            VALUES ({$userID}, {$dev_data_type}, ?)";
+        $query = "INSERT INTO data_logs (user_id, dt_id, readout_time) 
+            VALUES ({$userID}, (SELECT dt_id FROM dev_data_type WHERE dt_name = ?), ?)";
 
-        if ($dev_data_type === 0 && date('G:i', strtotime($readout["readout_time"])) === '14:00')
+        if ($dataTypeName === 'santerno_readouts' && date('G:i', strtotime($readout["readout_time"])) === '14:00')
             SqlQuery::updatePowerDayStats($this->Connection);
 
         if ($stmt = mysqli_prepare($this->Connection, $query)) {
-            mysqli_stmt_bind_param($stmt, "s", $readout["readout_time"]);
+            mysqli_stmt_bind_param($stmt, "ss", $dataTypeName, $readout["readout_time"]);
             $queryOK = mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);
         }
@@ -114,7 +107,7 @@ class DeviceDataSaver extends SqlRequest
         return $queryOK;
     }
 
-    private function insertReadoutsToDB($dataType, $readouts)
+    private function insertReadoutsToDB($dataTypeName, $readouts)
     {
         $ommitCounter = 0;
 
@@ -131,20 +124,20 @@ class DeviceDataSaver extends SqlRequest
                 if (! array_key_exists('readout_time', $readout))
                     continue;
 
-                $queryOK = $this->insertReadoutTime(self::JSON_DATA_TYPE_IDS[$dataType], $readout);
+                $queryOK = $this->insertReadoutTime($dataTypeName, $readout);
                 if ($queryOK === FALSE) {
                     $ommitCounter += 1;
                     continue;
                 } else
                     $ommitCounter = 0;
             } else {
-                if ($dataType === 'santerno_readouts')
+                if ($dataTypeName === 'santerno_readouts')
                     $queryOK = $this->insertPowerData($readout);
-                else if ($dataType === 'ds18b20_readouts')
+                else if ($dataTypeName === 'ds18b20_readouts')
                     $queryOK = $this->insertTemperatureData($readout);
-                else if ($dataType === 'purifier_readouts')
+                else if ($dataTypeName === 'purifier_readouts')
                     $queryOK = $this->insertPurifierData($readout);
-                else if ($dataType === 'tasmota_readouts')
+                else if ($dataTypeName === 'tasmota_readouts')
                     $queryOK = $this->insertTasmotaData($readout);
                 else
                     return FALSE;
@@ -168,11 +161,11 @@ class DeviceDataSaver extends SqlRequest
         $keys = array_keys($json);
         mysqli_autocommit($this->Connection, FALSE);
 
-        foreach ($keys as $jsonDataType) {
-            if (strpos($jsonDataType, "_readouts") > 0) {
-                if ($this->insertReadoutsToDB($jsonDataType, $json[$jsonDataType])) {
+        foreach ($keys as $dataTypeName) {
+            if (strpos($dataTypeName, "_readouts") > 0) {
+                if ($this->insertReadoutsToDB($dataTypeName, $json[$dataTypeName])) {
                     mysqli_commit($this->Connection);
-                    echo "_" . $jsonDataType . "_inserted_ok_";
+                    echo "_" . $dataTypeName . "_inserted_ok_";
                 } else
                     mysqli_rollback($this->Connection);
             }
