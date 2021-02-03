@@ -18,12 +18,12 @@ $page_template = '<!DOCTYPE html>
 <a href="stats">PV Statistics</a>
 </div>
 <center>
-<input type="date" id="dateFrom" value="%1$s" onchange="getChartsByDate()"/>
-<input type="date" id="dateTo" value="%1$s" onchange="getChartsByDate()"/>
+<input type="date" id="dateFrom" value="%1$s" max="%1$s" onchange="getChartsByDate(this)"/>
+<input type="date" id="dateTo" value="%1$s" max="%1$s" onchange="getChartsByDate(this)"/>
 <select id="dataTypeSelector" onchange="getChartsByDate()">
 %2$s
 </select>
-<select id="userSelector">
+<select id="userSelector" onchange="getChartsByDate()">
 %3$s
 </select>
 <button onclick="getChartsByDate()">&#x21BB;</button>

@@ -1,4 +1,7 @@
-function sendAJAX(url, params){
+function sendAJAX(url, params)
+{
+    document.title = "Monitoring - Charts loading";
+
     $.ajax({
         type: "post",
         url: url,
@@ -8,23 +11,44 @@ function sendAJAX(url, params){
             if (jsonResp && Object.keys(jsonResp).length > 0) {
                 document.title = "Monitoring - Charts loaded";
                 drawChartJS(jsonResp);
-            } else
+            } else {
                 document.title = "Monitoring - NO DATA";
+                document.getElementById('chartsContainer').innerHTML = '<br><div style="background-color:#ff9933;color:black;">NO DATA</div>';
+            }
         },
         error: function(){
             document.title = "Monitoring - reception error";
-            alert("Invalid response or no data");
+            alert("Invalid response");
         }
     });
 }
 
-function getChartsByDate(){
+function checkDateInterval(obj)
+{
+    if (obj === undefined)
+        return;
 
-    var type = document.getElementById('dataTypeSelector').value;
-    var dateFrom = document.getElementById('dateFrom').value;
-    var dateTo = document.getElementById('dateTo').value;
-    var hash = document.getElementById('userSelector').value
-    
+    const interval31days =  1000 * 60 * 60 * 24 * 31;
+    const dateFrom = new Date(document.getElementById('dateFrom').value);
+    const dateTo = new Date(document.getElementById('dateTo').value);
+    const dateDiff = dateTo.getTime() - dateFrom.getTime();
+
+    if (obj.id === "dateFrom" && (Math.abs(dateDiff) > interval31days || dateTo < dateFrom))
+        document.getElementById('dateTo').value = document.getElementById('dateFrom').value;
+
+    if (obj.id === "dateTo" && (Math.abs(dateDiff) > interval31days || dateTo < dateFrom))
+        document.getElementById('dateFrom').value = document.getElementById('dateTo').value;
+}
+
+function getChartsByDate(obj = undefined)
+{
+    checkDateInterval(obj);
+
+    const type = document.getElementById('dataTypeSelector').value;
+    const dateFrom = document.getElementById('dateFrom').value;
+    let dateTo = document.getElementById('dateTo').value;
+    const hash = document.getElementById('userSelector').value;
+
     if (!dateFrom || !dateTo)
         return;
 
@@ -33,53 +57,40 @@ function getChartsByDate(){
         document.getElementById('dateTo').value = dateFrom;
         document.getElementById('dateTo').readOnly = true;
     }
-    else {
+    else
         document.getElementById('dateTo').readOnly = false;
-    }
-    
+
     sendAJAX('Chart', { "type": type, "dateFrom": dateFrom, "dateTo": dateTo, "hash": hash });
 }
 
-function getSanternoStatsCharts(){
-    var hash = document.getElementById('userSelector').value
+function getSanternoStatsCharts()
+{
+    const hash = document.getElementById('userSelector').value
     sendAJAX('Chart', { "stats": 0, "hash": hash });
 }
 
-function setContainer(id){
-    var container = document.getElementById('chartsContainer');
-    
-    var node = document.createElement('canvas');
+function setContainer(id)
+{
+    const container = document.getElementById('chartsContainer');
+    const node = document.createElement('canvas');
+
     node.setAttribute('id', id);
-    
-    if (container.children[id])
-    {
-        container.children[id] = node;
-    }
-    else
-    {
-        container.appendChild(node);
-    }
+    container.appendChild(node);
 }
 
-var charts = [];
-
-function drawChartJS(jsonResp){
+function drawChartJS(jsonResp)
+{
     document.getElementById('chartsContainer').innerHTML = '';
-    
-    for(var jsonKey in jsonResp)
+
+    for(let jsonKey in jsonResp)
     {
-        var item = jsonResp[jsonKey];
-        
-        if (item){
+        const chartConfig = jsonResp[jsonKey];
+
+        if (chartConfig.hasOwnProperty('data')){
             setContainer(jsonKey);
 
-            var ctx = document.getElementById(jsonKey).getContext("2d");
-
-            if (charts[jsonKey]){
-                charts[jsonKey].destroy();
-            }
-            
-            charts[jsonKey] = new Chart(ctx, item);
+            const ctx = document.getElementById(jsonKey).getContext("2d");
+            new Chart(ctx, chartConfig);
         }
     }
 }
