@@ -7,6 +7,8 @@ Saving and presenting device data from encrypted POST data.
 
 It is a web application for saving and presenting sensors/devices readouts received from encrypted JSON request. You can see this project: https://github.com/id872/data_logger for more details. Decrypted devices data readouts are inserted into DB. Charts are generated with using [Chart.js library](https://www.chartjs.org/).
 
+See [demo app](https://demodevmon.000webhostapp.com/current).
+
 The application works with data from the following devices:
 * Santerno Solar Inverters  (https://en.wikipedia.org/wiki/Solar_inverter)
 * DS18B20 temperature sensors (https://www.maximintegrated.com/en/products/sensors/DS18B20.html)

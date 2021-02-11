@@ -54,7 +54,7 @@ CREATE TABLE power_data_readings(
     PRIMARY KEY (device_id, data_id),
     FOREIGN KEY (data_id) REFERENCES data_logs (data_id),
     FOREIGN KEY (device_id) REFERENCES devices (device_id)
-)ENGINE=InnoDB;
+)ENGINE=InnoDB ROW_FORMAT=COMPRESSED;
 
 CREATE TABLE temperature_data_readings(
     data_id INT UNSIGNED NOT NULL,
@@ -109,13 +109,7 @@ INSERT INTO `dev_data_type` (`dt_name`, `dt_description`) VALUES
 INSERT INTO `users` (`user_name`, `user_password_hash`, `api_key`, `api_hash`) VALUES
 ('PI_Zero', '$2b$12$nNCVIofFKjg4F0acMTvjx.NksycLdqxLwbj/vckAidZL0B2pkAyfK', 'dad6f9894a328abf65466919a8dba2cd280758e64936882daa2bc22a9f911234', '831fe1b07d15fff8c9d6487e2ba1d77f82dd68de');
 
-/*
-dev_data_type is a data structure id for particular device.
-0 - power data - Santerno Solar inverter data
-1 - temperature data - DS18B20 temperature data
-2 - air purity data - AQI, FAN_RPM, humidity, temperature data from XiaomiAirPurifier2
-3 - power consumption data - Power, Current, Voltage from Tasmota plug
-*/
+
 INSERT INTO `devices` (`user_id`, `dt_id`, `dev_name`)
     VALUES (LAST_INSERT_ID(), (SELECT dt_id FROM dev_data_type WHERE dt_name = 'ds18b20_readouts'), 'Room'),
     (LAST_INSERT_ID(), (SELECT dt_id FROM dev_data_type WHERE dt_name = 'purifier_readouts'), 'XiaomiAirPurifier2'),
