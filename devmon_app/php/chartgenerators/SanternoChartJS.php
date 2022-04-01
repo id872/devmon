@@ -70,13 +70,19 @@ class SanternoChartJS
 
         $chartConfig['options'] = ChartJSHelper::GetOptions($optCfg);
 
+        $data_start = current($this->JsonData);
+        $data_end = end($this->JsonData);
+        $start_timestamp = (new DateTime(current($data_start)))->getTimestamp();
+        $end_timestamp = (new DateTime(current($data_end)))->getTimestamp();
+        $hours_production = ($end_timestamp - $start_timestamp) / (60 * 60);
+
         $count = count($this->JsonData);
         $avg = ($total / $count);
-        $prod = (($avg * ($count / 120.0)) / 1000);
+        $prod = ($avg * $hours_production) / 1000;
 
         $chartConfig['options']['title'] = array(
             'display' => true,
-            'text' => sprintf("[2x Santerno 3kW] -> AC | Max %d W | Avg %.2f W | Produced %.2f kWh |", $max, $avg, $prod)
+            'text' => sprintf("[2x Santerno 3kW] -> AC | Max %d W | Avg %.2f W | Produced %.2f kWh in %.1f hours |", $max, $avg, $prod, $hours_production)
         );
 
         return $chartConfig;
