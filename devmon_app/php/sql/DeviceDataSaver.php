@@ -32,11 +32,11 @@ class DeviceDataSaver extends SqlRequest
         $deviceID = $this->getDeviceId($readout["dev_name"]);
 
         $query = "INSERT INTO power_data_readings 
-            (data_id, device_id, ac_power, dc_voltage, dc_current, cpu_temperature, radiator_temperature) 
-            VALUES (LAST_INSERT_ID(), {$deviceID}, ?, ?, ?, ?, ?)";
+            (data_id, device_id, ac_power, dc_voltage, dc_current, cpu_temperature, radiator_temperature, grid_voltage, grid_current, grid_frequency)
+            VALUES (LAST_INSERT_ID(), {$deviceID}, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if ($stmt = mysqli_prepare($this->Connection, $query)) {
-            mysqli_stmt_bind_param($stmt, "ddddd", $readout["ac_power"], $readout["dc_voltage"], $readout["dc_current"], $readout["cpu_temperature"], $readout["radiator_temperature"]);
+            mysqli_stmt_bind_param($stmt, "dddddddd", $readout["ac_power"], $readout["dc_voltage"], $readout["dc_current"], $readout["cpu_temperature"], $readout["radiator_temperature"], $readout["grid_voltage"], $readout["grid_current"], $readout["grid_freq"]);
 
             $queryOK = mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);

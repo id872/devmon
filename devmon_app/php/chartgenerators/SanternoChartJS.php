@@ -19,6 +19,7 @@ class SanternoChartJS
         return array(
             "santernoAcData" => $this->PrepareAcPowerData(),
             "santernoDcData" => $this->PrepareDcPowerData(),
+            "santernoAcGridData" => $this->PrepareAcGridData(),
             "santernoTemperatureData" => $this->PrepareInverterTemperatureData()
         );
     }
@@ -134,6 +135,57 @@ class SanternoChartJS
         $chartConfig['options']['title'] = array(
             'display' => true,
             'text' => "[2x Santerno 3kW] -> DC Power data"
+        );
+
+        return $chartConfig;
+    }
+
+    private function PrepareAcGridData()
+    {
+        $chartConfig = array();
+
+        $optCfg[] = array(
+            'id' => 'y1',
+            'name' => 'Voltage (V)',
+            'position' => 'left'
+        );
+        $optCfg[] = array(
+            'id' => 'y2',
+            'name' => 'Current (A)',
+            'position' => 'right',
+            'displayLines' => false
+        );
+
+        $chartConfig['type'] = 'line';
+        $chartConfig['data']['labels'] = array();
+
+        $head_keys = array_keys(current($this->JsonData));
+
+        $acDataSetIdx = 0;
+
+        foreach ($head_keys as $key) {
+            if (strpos($key, "_grid_voltage") > 0)
+                $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y1', $acDataSetIdx++);
+
+            if (strpos($key, "_grid_current") > 0)
+                $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y2', $acDataSetIdx++);
+        }
+
+        $chartConfig['options'] = ChartJSHelper::GetOptions($optCfg);
+
+        foreach ($this->JsonData as $key => $vals) {
+            $acDataSetIdx = 0;
+            $chartConfig['data']['labels'][] = $key;
+
+            foreach ($vals as $key => $val) {
+                if (strpos($key, "_grid_voltage") > 0 || strpos($key, "_grid_current") > 0)
+                    $chartConfig['data']['datasets'][$acDataSetIdx++]['data'][] = $val;
+            }
+        }
+
+        $chartConfig['options']['title'] = array(
+            'display' => true,
+            'text' => "[2x Santerno 3kW] -> AC Grid Power data"
         );
 
         return $chartConfig;

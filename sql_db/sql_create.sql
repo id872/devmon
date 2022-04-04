@@ -51,6 +51,9 @@ CREATE TABLE power_data_readings(
     dc_current DECIMAL(4,2) UNSIGNED,
     cpu_temperature DECIMAL(4,1),
     radiator_temperature DECIMAL(4,1),
+    grid_voltage DECIMAL(5,1) UNSIGNED,
+    grid_current DECIMAL(4,2) UNSIGNED,
+    grid_frequency DECIMAL(3,1) UNSIGNED,
     PRIMARY KEY (device_id, data_id),
     FOREIGN KEY (data_id) REFERENCES data_logs (data_id),
     FOREIGN KEY (device_id) REFERENCES devices (device_id)

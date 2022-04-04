@@ -10,7 +10,8 @@ class SanternoJsonDataGetter extends SqlRequest
         $dateTo = sprintf('%s 23:59:59', $dateDay);
         $userName = $this->getUserData("user_name");
 
-        $query = 'SELECT L.readout_time, D.dev_name, P.ac_power, P.dc_current, P.dc_voltage, P.cpu_temperature, P.radiator_temperature FROM power_data_readings P
+        $query = 'SELECT L.readout_time, D.dev_name, P.ac_power, P.dc_current, P.dc_voltage, P.cpu_temperature, P.radiator_temperature,
+        P.grid_voltage, P.grid_current, P.grid_frequency FROM power_data_readings P
             LEFT JOIN data_logs L on (L.data_id = P.data_id)
             LEFT JOIN devices D on (D.device_id = P.device_id)
             WHERE L.readout_time BETWEEN ? AND ? AND D.user_id = (SELECT user_id FROM users WHERE user_name = ?)
@@ -37,6 +38,9 @@ class SanternoJsonDataGetter extends SqlRequest
                 $rows[$readout_time][$dev_name . '_dc_voltage'] = $row['dc_voltage'];
                 $rows[$readout_time][$dev_name . '_cpu_temperature'] = $row['cpu_temperature'];
                 $rows[$readout_time][$dev_name . '_radiator_temperature'] = $row['radiator_temperature'];
+                $rows[$readout_time][$dev_name . '_grid_voltage'] = $row['grid_voltage'];
+                $rows[$readout_time][$dev_name . '_grid_current'] = $row['grid_current'];
+                $rows[$readout_time][$dev_name . '_grid_frequency'] = $row['grid_frequency'];
             }
 
             mysqli_stmt_close($stmt);
