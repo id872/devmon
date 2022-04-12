@@ -35,7 +35,7 @@ class PurifierChartJS
             'id' => 'y2',
             'name' => 'FAN Speed (RPM)',
             'position' => 'right',
-            'displayLines' => false
+            'displayLines' => true
         );
 
         $head_keys = array_keys(current($this->JsonData));
@@ -65,7 +65,7 @@ class PurifierChartJS
             }
         }
 
-        $chartConfig['options']['title'] = array(
+        $chartConfig['options']['plugins']['title'] = array(
             'display' => true,
             'text' => "Purifier Purity/FAN_RPM chart"
         );
@@ -86,7 +86,7 @@ class PurifierChartJS
             'id' => 'y2',
             'name' => 'Temperature (C)',
             'position' => 'right',
-            'displayLines' => false
+            'displayLines' => true
         );
 
         $head_keys = array_keys(current($this->JsonData));
@@ -116,7 +116,7 @@ class PurifierChartJS
             }
         }
 
-        $chartConfig['options']['title'] = array(
+        $chartConfig['options']['plugins']['title'] = array(
             'display' => true,
             'text' => "Purifier Humidity/Temperature chart"
         );

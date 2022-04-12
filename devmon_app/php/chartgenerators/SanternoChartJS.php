@@ -32,7 +32,8 @@ class SanternoChartJS
         $optCfg[] = array(
             'id' => 'y',
             'name' => 'Power (W)',
-            'position' => 'left'
+            'position' => 'left',
+            'displayLines' => true
         );
 
         $chartConfig['type'] = 'line';
@@ -81,7 +82,7 @@ class SanternoChartJS
         $avg = ($total / $count);
         $prod = ($avg * $hours_production) / 1000;
 
-        $chartConfig['options']['title'] = array(
+        $chartConfig['options']['plugins']['title'] = array(
             'display' => true,
             'text' => sprintf("[2x Santerno 3kW] -> AC | Max %d W | Avg %.2f W | Produced %.2f kWh in %.1f hours |", $max, $avg, $prod, $hours_production)
         );
@@ -96,7 +97,8 @@ class SanternoChartJS
         $optCfg[] = array(
             'id' => 'y1',
             'name' => 'Voltage (V)',
-            'position' => 'left'
+            'position' => 'left',
+            'displayLines' => true
         );
         $optCfg[] = array(
             'id' => 'y2',
@@ -132,7 +134,7 @@ class SanternoChartJS
             }
         }
 
-        $chartConfig['options']['title'] = array(
+        $chartConfig['options']['plugins']['title'] = array(
             'display' => true,
             'text' => "[2x Santerno 3kW] -> DC Power data"
         );
@@ -147,7 +149,8 @@ class SanternoChartJS
         $optCfg[] = array(
             'id' => 'y1',
             'name' => 'Voltage (V)',
-            'position' => 'left'
+            'position' => 'left',
+            'displayLines' => true
         );
         $optCfg[] = array(
             'id' => 'y2',
@@ -183,7 +186,7 @@ class SanternoChartJS
             }
         }
 
-        $chartConfig['options']['title'] = array(
+        $chartConfig['options']['plugins']['title'] = array(
             'display' => true,
             'text' => "[2x Santerno 3kW] -> AC Grid Power data"
         );
@@ -198,7 +201,8 @@ class SanternoChartJS
         $optCfg[] = array(
             'id' => 'y',
             'name' => 'Temperature (C)',
-            'position' => 'left'
+            'position' => 'left',
+            'displayLines' => true
         );
 
         $chartConfig['type'] = 'line';
@@ -225,7 +229,7 @@ class SanternoChartJS
             }
         }
 
-        $chartConfig['options']['title'] = array(
+        $chartConfig['options']['plugins']['title'] = array(
             'display' => true,
             'text' => "[2x Santerno 3kW] -> Inverters temperature"
         );

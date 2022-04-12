@@ -52,50 +52,28 @@ class ChartJSHelper
     {
         $opts['scales'] = array();
 
-        $opts['scales']['xAxes'][] = array(
-            'gridLines' => array(
-                'display' => false
-            ),
-            'scaleLabel' => array(
-                'display' => true,
-                'fontColor' => 'blue',
-                'fontSize' => 14,
-                'labelString' => 'Time'
-            )
-        );
+        $opts['scales']['x']['grid']['display'] = false;
 
         foreach ($yAxesCfg as $cfg) {
-
-            if (! array_key_exists('displayLines', $cfg))
-                $cfg['displayLines'] = true;
-
-            $opts['scales']['yAxes'][] = array(
-                'gridLines' => array(
-                    'display' => $cfg['displayLines']
-                ),
-                'ticks' => array(
-                    'step' => 1
-                ),
-
-                'position' => $cfg['position'],
-                'id' => $cfg['id'],
-
-                'scaleLabel' => array(
+            $opts['scales'][$cfg['id']] = array(
+                'title' => array(
                     'display' => true,
-                    'fontColor' => 'blue',
-                    'fontSize' => 14,
-                    'labelString' => $cfg['name']
+                    'color' => 'blue',
+                    'text' => $cfg['name'],
+                    'font' => array(
+                        'size' => 14
+                    )
+                ),
+                'position' => $cfg['position'],
+                'grid' => array(
+                    'display' => $cfg['displayLines']
                 )
             );
 
             // for performance
-            $opts['animation'] = array(
-                'duration' => 0
-            );
-            $opts['hover'] = array(
-                'animationDuration' => 0
-            );
             $opts['responsiveAnimationDuration'] = 0;
+            $opts['animation'] = false;
+            $opts['snapGaps'] = true;
         }
 
         return $opts;

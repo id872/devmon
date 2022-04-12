@@ -31,7 +31,8 @@ class SanternoStatsChartJS
         $optCfg[] = array(
             'id' => 'y',
             'name' => 'Power produced (kWh)',
-            'position' => 'left'
+            'position' => 'left',
+            'displayLines' => true
         );
 
         $chartConfig['type'] = 'bar';
@@ -67,7 +68,7 @@ class SanternoStatsChartJS
             $yearTotal += $powerTotal;
         }
 
-        $chartConfig['options']['title'] = array(
+        $chartConfig['options']['plugins']['title'] = array(
             'display' => true,
             'text' => sprintf("Year %s Power production - Total: %.2f kWh", $year, $yearTotal)
         );

@@ -29,7 +29,8 @@ class TasmotaChartJS
         $optCfg[] = array(
             'id' => 'y',
             'name' => 'Power (W)',
-            'position' => 'left'
+            'position' => 'left',
+            'displayLines' => true
         );
 
         $head_keys = array_keys(end($this->JsonData));
@@ -57,7 +58,7 @@ class TasmotaChartJS
             }
         }
 
-        $chartConfig['options']['title'] = array(
+        $chartConfig['options']['plugins']['title'] = array(
             'display' => true,
             'text' => "Tasmota Power chart"
         );
@@ -72,12 +73,14 @@ class TasmotaChartJS
         $optCfg[] = array(
             'id' => 'y1',
             'name' => 'Voltage (V)',
-            'position' => 'left'
+            'position' => 'left',
+            'displayLines' => true
         );
         $optCfg[] = array(
             'id' => 'y2',
             'name' => 'Curren (A)',
-            'position' => 'right'
+            'position' => 'right',
+            'displayLines' => true
         );
 
         $head_keys = array_keys(end($this->JsonData));
@@ -107,7 +110,7 @@ class TasmotaChartJS
                     $chartConfig['data']['datasets'][$tDataSetIdx++]['data'][] = $val;
         }
 
-        $chartConfig['options']['title'] = array(
+        $chartConfig['options']['plugins']['title'] = array(
             'display' => true,
             'text' => "Tasmota Voltage/Current chart"
         );

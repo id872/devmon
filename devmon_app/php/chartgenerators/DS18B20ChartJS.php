@@ -28,7 +28,8 @@ class DS18B20ChartJS
         $optCfg[] = array(
             'id' => 'y',
             'name' => 'Temperature (C)',
-            'position' => 'left'
+            'position' => 'left',
+            'displayLines' => true
         );
 
         $head_keys = array_keys(current($this->JsonData));
@@ -38,15 +39,15 @@ class DS18B20ChartJS
 
         $tDataSetIdx = 0;
 
-        foreach ($head_keys as $key) {
-            if (strpos($key, "_temperature") > 0)
-                $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y', $tDataSetIdx++);
+        foreach ($head_keys as $sensorName) {
+            if (strpos($sensorName, "_temperature") > 0)
+                $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($sensorName, 'y', $tDataSetIdx++);
         }
 
         $chartConfig['options'] = ChartJSHelper::GetOptions($optCfg);
 
-        foreach ($this->JsonData as $key => $vals) {
-            array_push($chartConfig['data']['labels'], $key);
+        foreach ($this->JsonData as $dateTime => $vals) {
+            array_push($chartConfig['data']['labels'], $dateTime);
             $tDataSetIdx = 0;
 
             foreach ($vals as $key => $val) {
@@ -55,7 +56,7 @@ class DS18B20ChartJS
             }
         }
 
-        $chartConfig['options']['title'] = array(
+        $chartConfig['options']['plugins']['title'] = array(
             'display' => true,
             'text' => "[DS18B20 sensor] -> Temperature data"
         );
