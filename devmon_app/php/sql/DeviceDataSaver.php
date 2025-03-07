@@ -4,15 +4,24 @@ require_once 'SqlQuery.php';
 
 class DeviceDataSaver extends SqlRequest
 {
-
     const MAX_OMMIT_INSERT_COUNT = 1;
+
+    private function sqliExecute($stmt)
+    {
+        try {
+            return mysqli_stmt_execute($stmt);
+        }
+        catch (mysqli_sql_exception $e) {
+            return FALSE;
+        }
+    }
 
     private function insertReadoutTime($dataTypeName, $readout)
     {
         $queryOK = FALSE;
         $userID = $this->getUserData("user_id");
 
-        $query = "INSERT INTO data_logs (user_id, dt_id, readout_time) 
+        $query = "INSERT INTO data_logs (user_id, dt_id, readout_time)
             VALUES ({$userID}, (SELECT dt_id FROM dev_data_type WHERE dt_name = ?), ?)";
 
         if ($dataTypeName === 'santerno_readouts' && date('G:i', strtotime($readout["readout_time"])) === '14:00')
@@ -20,7 +29,8 @@ class DeviceDataSaver extends SqlRequest
 
         if ($stmt = mysqli_prepare($this->Connection, $query)) {
             mysqli_stmt_bind_param($stmt, "ss", $dataTypeName, $readout["readout_time"]);
-            $queryOK = mysqli_stmt_execute($stmt);
+
+            $queryOK = $this->sqliExecute($stmt);
             mysqli_stmt_close($stmt);
         }
         return $queryOK;
@@ -31,14 +41,14 @@ class DeviceDataSaver extends SqlRequest
         $queryOK = FALSE;
         $deviceID = $this->getDeviceId($readout["dev_name"]);
 
-        $query = "INSERT INTO power_data_readings 
+        $query = "INSERT INTO power_data_readings
             (data_id, device_id, ac_power, dc_voltage, dc_current, cpu_temperature, radiator_temperature, grid_voltage, grid_current, grid_frequency)
             VALUES (LAST_INSERT_ID(), {$deviceID}, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if ($stmt = mysqli_prepare($this->Connection, $query)) {
             mysqli_stmt_bind_param($stmt, "dddddddd", $readout["ac_power"], $readout["dc_voltage"], $readout["dc_current"], $readout["cpu_temperature"], $readout["radiator_temperature"], $readout["grid_voltage"], $readout["grid_current"], $readout["grid_freq"]);
 
-            $queryOK = mysqli_stmt_execute($stmt);
+            $queryOK = $this->sqliExecute($stmt);
             mysqli_stmt_close($stmt);
         }
         return $queryOK;
@@ -56,7 +66,7 @@ class DeviceDataSaver extends SqlRequest
         if ($stmt = mysqli_prepare($this->Connection, $query)) {
             mysqli_stmt_bind_param($stmt, "d", $readout["temperature"]);
 
-            $queryOK = mysqli_stmt_execute($stmt);
+            $queryOK = $this->sqliExecute($stmt);
             mysqli_stmt_close($stmt);
         }
         return $queryOK;
@@ -83,7 +93,7 @@ class DeviceDataSaver extends SqlRequest
         if ($stmt = mysqli_prepare($this->Connection, $query)) {
             mysqli_stmt_bind_param($stmt, "dddd", $readout["aqi"], $readout["humidity"], $readout["temperature"], $readout["fan_rpm"]);
 
-            $queryOK = mysqli_stmt_execute($stmt);
+            $queryOK = $this->sqliExecute($stmt);
             mysqli_stmt_close($stmt);
         }
         return $queryOK;
@@ -101,7 +111,7 @@ class DeviceDataSaver extends SqlRequest
         if ($stmt = mysqli_prepare($this->Connection, $query)) {
             mysqli_stmt_bind_param($stmt, "ddd", $readout["ac_power"], $readout["ac_voltage"], $readout["ac_current"]);
 
-            $queryOK = mysqli_stmt_execute($stmt);
+            $queryOK = $this->sqliExecute($stmt);
             mysqli_stmt_close($stmt);
         }
         return $queryOK;
@@ -110,9 +120,6 @@ class DeviceDataSaver extends SqlRequest
     private function insertReadoutsToDB($dataTypeName, $readouts)
     {
         $ommitCounter = 0;
-
-        if ($readouts === NULL || count($readouts) < 1)
-            return FALSE;
 
         foreach ($readouts as $readout) {
             $queryOK = FALSE;
@@ -162,15 +169,22 @@ class DeviceDataSaver extends SqlRequest
         mysqli_autocommit($this->Connection, FALSE);
 
         foreach ($keys as $dataTypeName) {
-            if (strpos($dataTypeName, "_readouts") > 0) {
-                if ($this->insertReadoutsToDB($dataTypeName, $json[$dataTypeName])) {
-                    mysqli_commit($this->Connection);
-                    echo "_" . $dataTypeName . "_inserted_ok_";
-                } else
-                    mysqli_rollback($this->Connection);
+            if (strpos($dataTypeName, "_readouts") === FALSE) {
+                continue;
+            }
+            if ($json[$dataTypeName] === NULL || count($json[$dataTypeName]) < 1) {
+                continue;
+            }
+            if ($this->insertReadoutsToDB($dataTypeName, $json[$dataTypeName])) {
+                mysqli_commit($this->Connection);
+                echo $dataTypeName . "_inserted_ok\n";
+            } else {
+                mysqli_rollback($this->Connection);
+                echo $dataTypeName . "_data_error\n";
             }
         }
     }
 }
 
 ?>
+
