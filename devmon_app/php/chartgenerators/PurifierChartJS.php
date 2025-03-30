@@ -1,10 +1,10 @@
 <?php
+
 require_once 'utils/ChartJSHelper.php';
 
 class PurifierChartJS
 {
-
-    private $JsonData = NULL;
+    private $JsonData = null;
 
     function __construct(&$jsonData)
     {
@@ -13,8 +13,9 @@ class PurifierChartJS
 
     public function PrepareChart()
     {
-        if (! $this->JsonData)
+        if (! $this->JsonData) {
             return array();
+        }
 
         return array(
             "purifierPurityData" => $this->PreparePurifierPurityData(),
@@ -46,10 +47,11 @@ class PurifierChartJS
         $afDataSetIdx = 0;
 
         foreach ($head_keys as $key) {
-            if (strpos($key, "_aqi") > 0)
+            if (strpos($key, "_aqi") > 0) {
                 $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y1', $afDataSetIdx++);
-            else if (strpos($key, "_fan_rpm") > 0)
+            } elseif (strpos($key, "_fan_rpm") > 0) {
                 $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y2', $afDataSetIdx++);
+            }
         }
 
         $chartConfig['options'] = ChartJSHelper::GetOptions($optCfg);
@@ -60,8 +62,9 @@ class PurifierChartJS
             $afDataSetIdx = 0;
 
             foreach ($vals as $key => $val) {
-                if (strpos($key, "_aqi") > 0 || strpos($key, "_fan_rpm") > 0)
+                if (strpos($key, "_aqi") > 0 || strpos($key, "_fan_rpm") > 0) {
                     array_push($chartConfig['data']['datasets'][$afDataSetIdx++]['data'], $val);
+                }
             }
         }
 
@@ -97,10 +100,11 @@ class PurifierChartJS
         $thDataSetIdx = 0;
 
         foreach ($head_keys as $key) {
-            if (strpos($key, "_humidity") > 0)
+            if (strpos($key, "_humidity") > 0) {
                 $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y1', $thDataSetIdx++);
-            else if (strpos($key, "_temperature") > 0)
+            } elseif (strpos($key, "_temperature") > 0) {
                 $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y2', $thDataSetIdx++);
+            }
         }
 
         $chartConfig['options'] = ChartJSHelper::GetOptions($optCfg);
@@ -111,8 +115,9 @@ class PurifierChartJS
             $thDataSetIdx = 0;
 
             foreach ($vals as $key => $val) {
-                if (strpos($key, "_humidity") > 0 || strpos($key, "_temperature") > 0)
+                if (strpos($key, "_humidity") > 0 || strpos($key, "_temperature") > 0) {
                     array_push($chartConfig['data']['datasets'][$thDataSetIdx++]['data'], $val);
+                }
             }
         }
 
@@ -124,5 +129,3 @@ class PurifierChartJS
         return $chartConfig;
     }
 }
-
-?>

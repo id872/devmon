@@ -1,10 +1,10 @@
 <?php
+
 require_once 'utils/ChartJSHelper.php';
 
 class SanternoStatsChartJS
 {
-
-    private $JsonData = NULL;
+    private $JsonData = null;
 
     function __construct(&$jsonData)
     {
@@ -13,13 +13,15 @@ class SanternoStatsChartJS
 
     public function PrepareChart()
     {
-        if (! $this->JsonData)
+        if (! $this->JsonData) {
             return array();
+        }
 
         $charts = array();
 
-        foreach ($this->JsonData as $key => $vals)
+        foreach ($this->JsonData as $key => $vals) {
             $charts[sprintf("santernoMonthStatsData_%s", $key)] = $this->PrepareSanternoMonthYearStatsData($key, $vals);
+        }
 
         return $charts;
     }
@@ -43,8 +45,9 @@ class SanternoStatsChartJS
         $dataSetIdx = 0;
 
         foreach ($head_keys as $key) {
-            if (strpos($key, "_kwh") > 0)
+            if (strpos($key, "_kwh") > 0) {
                 $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y', $dataSetIdx++);
+            }
         }
 
         $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet('Power Total', 'y', $dataSetIdx++);
@@ -76,5 +79,3 @@ class SanternoStatsChartJS
         return $chartConfig;
     }
 }
-
-?>

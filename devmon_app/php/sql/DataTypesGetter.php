@@ -1,9 +1,9 @@
 <?php
+
 require_once 'SqlRequest.php';
 
 class DataTypesGetter extends SqlRequest
 {
-
     public function getData()
     {
         $query = 'SELECT dt_name, dt_description FROM dev_data_type ORDER BY dt_id';
@@ -13,23 +13,24 @@ class DataTypesGetter extends SqlRequest
 
             $result = mysqli_stmt_get_result($stmt);
 
-            if ($result === FALSE)
-                return FALSE;
+            if ($result === false) {
+                return false;
+            }
 
             $rows = array();
 
             while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-                if (array_key_exists('dt_name', $row) && array_key_exists('dt_description', $row))
+                if (array_key_exists('dt_name', $row) && array_key_exists('dt_description', $row)) {
                     $rows[] = array('dt_name' => $row['dt_name'], 'dt_description' => $row['dt_description']);
+                }
             }
 
             mysqli_stmt_close($stmt);
 
-            if (! empty($rows))
+            if (! empty($rows)) {
                 return $rows;
+            }
         }
-        return FALSE;
+        return false;
     }
 }
-
-?>

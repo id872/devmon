@@ -1,10 +1,10 @@
 <?php
+
 require_once 'utils/ChartJSHelper.php';
 
 class TasmotaChartJS
 {
-
-    private $JsonData = NULL;
+    private $JsonData = null;
 
     function __construct(&$jsonData)
     {
@@ -13,8 +13,9 @@ class TasmotaChartJS
 
     public function PrepareChart()
     {
-        if (! $this->JsonData)
+        if (! $this->JsonData) {
             return array();
+        }
 
         return array(
             "tasmotaPowerData" => $this->PrepareTasmotaPowerData(),
@@ -41,8 +42,9 @@ class TasmotaChartJS
         $tDataSetIdx = 0;
 
         foreach ($head_keys as $key) {
-            if (strpos($key, "_ac_power") > 0)
+            if (strpos($key, "_ac_power") > 0) {
                 $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y', $tDataSetIdx++);
+            }
         }
 
         $chartConfig['options'] = ChartJSHelper::GetOptions($optCfg);
@@ -53,8 +55,9 @@ class TasmotaChartJS
             $tDataSetIdx = 0;
 
             foreach ($vals as $key => $val) {
-                if (strpos($key, "_ac_power") > 0)
+                if (strpos($key, "_ac_power") > 0) {
                     $chartConfig['data']['datasets'][$tDataSetIdx++]['data'][] = $val;
+                }
             }
         }
 
@@ -80,7 +83,7 @@ class TasmotaChartJS
             'id' => 'y2',
             'name' => 'Curren (A)',
             'position' => 'right',
-            'displayLines' => true
+            'displayLines' => false
         );
 
         $head_keys = array_keys(end($this->JsonData));
@@ -91,11 +94,13 @@ class TasmotaChartJS
         $tDataSetIdx = 0;
 
         foreach ($head_keys as $key) {
-            if (strpos($key, "_ac_voltage") > 0)
+            if (strpos($key, "_ac_voltage") > 0) {
                 $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y1', $tDataSetIdx++);
+            }
 
-            if (strpos($key, "_ac_current") > 0)
+            if (strpos($key, "_ac_current") > 0) {
                 $chartConfig['data']['datasets'][] = ChartJSHelper::GetDataSet($key, 'y2', $tDataSetIdx++);
+            }
         }
 
         $chartConfig['options'] = ChartJSHelper::GetOptions($optCfg);
@@ -105,9 +110,11 @@ class TasmotaChartJS
 
             $tDataSetIdx = 0;
 
-            foreach ($vals as $key => $val)
-                if (strpos($key, "_ac_voltage") > 0 || strpos($key, "_ac_current") > 0)
+            foreach ($vals as $key => $val) {
+                if (strpos($key, "_ac_voltage") > 0 || strpos($key, "_ac_current") > 0) {
                     $chartConfig['data']['datasets'][$tDataSetIdx++]['data'][] = $val;
+                }
+            }
         }
 
         $chartConfig['options']['plugins']['title'] = array(
@@ -118,5 +125,3 @@ class TasmotaChartJS
         return $chartConfig;
     }
 }
-
-?>

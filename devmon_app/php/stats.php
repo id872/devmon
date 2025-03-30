@@ -7,8 +7,8 @@ $page_template = '<!DOCTYPE html>
 <head>
 <title>Monitoring</title>
 <link rel="stylesheet" type="text/css" href="../css/style.css">
-<script src="../js/jquery-3.5.1.min.js"></script>
-<script src="../js/Chart.js"></script>
+<script src="../js/chart.umd.js"></script>
+<script src="../js/jquery-3.7.1.min.js"></script>
 <script src="../js/charts.js"></script>
 </head>
 <body>
@@ -32,12 +32,13 @@ $page_template = '<!DOCTYPE html>
 
 function GetUsers()
 {
-    $data = (new UsersGetter(NULL))->getData();
+    $data = (new UsersGetter(null))->getData();
     $strPattern = '<option value="%1$s">%2$s</option>';
     $userOptions = array();
 
-    foreach($data as $row) 
+    foreach ($data as $row) {
         $userOptions[] = sprintf($strPattern, $row['api_hash'], $row['user_name']);
+    }
 
     return join('', $userOptions);
 }
@@ -50,4 +51,3 @@ function GenerateStatisticsPage()
 }
 
 echo GenerateStatisticsPage();
-?>

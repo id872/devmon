@@ -1,9 +1,9 @@
 <?php
+
 require_once 'SqlRequest.php';
 
 class TasmotaJsonDataGetter extends SqlRequest
 {
-
     public function getData($dateFrom, $dateTo)
     {
         $dateFrom = sprintf('%s 00:00:00', $dateFrom);
@@ -21,8 +21,9 @@ class TasmotaJsonDataGetter extends SqlRequest
 
             $result = mysqli_stmt_get_result($stmt);
 
-            if ($result === FALSE)
-                return FALSE;
+            if ($result === false) {
+                return false;
+            }
 
             $rows = array();
 
@@ -37,12 +38,11 @@ class TasmotaJsonDataGetter extends SqlRequest
 
             mysqli_stmt_close($stmt);
 
-            if (! empty($rows))
+            if (! empty($rows)) {
                 return $rows;
+            }
         }
 
-        return FALSE;
+        return false;
     }
 }
-
-?>

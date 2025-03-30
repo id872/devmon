@@ -2,7 +2,7 @@
 
 require_once 'SqlRequest.php';
 
-class PurifierJsonDataGetter extends SqlRequest
+class AhtEnsJsonDataGetter extends SqlRequest
 {
     public function getData($dateFrom, $dateTo)
     {
@@ -10,9 +10,9 @@ class PurifierJsonDataGetter extends SqlRequest
         $dateTo = sprintf('%s 23:59:59', $dateTo);
         $userName = $this->getUserData("user_name");
 
-        $query_purifier = 'SELECT L.readout_time, D.dev_name, P.aqi, P.humidity, P.temperature, P.fan_rpm FROM purifier_data_readings P
-            LEFT JOIN data_logs L on (L.data_id = P.data_id)
-            LEFT JOIN devices D on (D.device_id = P.device_id)
+        $query_purifier = 'SELECT L.readout_time, D.dev_name, A.aqi, A.eco2, A.tvoc, A.temperature, A.humidity FROM aht_ens_data_readings A
+            LEFT JOIN data_logs L on (L.data_id = A.data_id)
+            LEFT JOIN devices D on (D.device_id = A.device_id)
             WHERE L.readout_time BETWEEN ? AND ? AND D.user_id = (SELECT user_id FROM users WHERE user_name = ?)';
 
         if ($stmt = mysqli_prepare($this->Connection, $query_purifier)) {
@@ -32,9 +32,10 @@ class PurifierJsonDataGetter extends SqlRequest
                 $readout_time = $row['readout_time'];
 
                 $rows[$readout_time][$dev_name . '_aqi'] = $row['aqi'];
-                $rows[$readout_time][$dev_name . '_humidity'] = $row['humidity'];
+                $rows[$readout_time][$dev_name . '_eco2'] = $row['eco2'];
+                $rows[$readout_time][$dev_name . '_tvoc'] = $row['tvoc'];
                 $rows[$readout_time][$dev_name . '_temperature'] = $row['temperature'];
-                $rows[$readout_time][$dev_name . '_fan_rpm'] = $row['fan_rpm'];
+                $rows[$readout_time][$dev_name . '_humidity'] = $row['humidity'];
             }
 
             mysqli_stmt_close($stmt);

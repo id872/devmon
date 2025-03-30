@@ -1,9 +1,9 @@
 <?php
+
 require_once 'SqlRequest.php';
 
 class DS18B20JsonDataGetter extends SqlRequest
 {
-
     public function getData($dateFrom, $dateTo)
     {
         $dateFrom = sprintf('%s 00:00:00', $dateFrom);
@@ -21,8 +21,9 @@ class DS18B20JsonDataGetter extends SqlRequest
 
             $result = mysqli_stmt_get_result($stmt);
 
-            if ($result === FALSE)
-                return FALSE;
+            if ($result === false) {
+                return false;
+            }
 
             $rows = array();
 
@@ -35,11 +36,10 @@ class DS18B20JsonDataGetter extends SqlRequest
 
             mysqli_stmt_close($stmt);
 
-            if (! empty($rows))
+            if (! empty($rows)) {
                 return $rows;
+            }
         }
-        return FALSE;
+        return false;
     }
 }
-
-?>

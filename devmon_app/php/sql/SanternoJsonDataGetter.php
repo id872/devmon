@@ -1,9 +1,9 @@
 <?php
+
 require_once 'SqlRequest.php';
 
 class SanternoJsonDataGetter extends SqlRequest
 {
-
     public function getData($dateDay)
     {
         $dateFrom = sprintf('%s 00:00:00', $dateDay);
@@ -23,8 +23,9 @@ class SanternoJsonDataGetter extends SqlRequest
 
             $result = mysqli_stmt_get_result($stmt);
 
-            if ($result === FALSE)
-                return FALSE;
+            if ($result === false) {
+                return false;
+            }
 
             $rows = array();
 
@@ -45,10 +46,11 @@ class SanternoJsonDataGetter extends SqlRequest
 
             mysqli_stmt_close($stmt);
 
-            if (! empty($rows))
+            if (! empty($rows)) {
                 return $rows;
+            }
         }
-        return FALSE;
+        return false;
     }
 
     public function getMonthStatsData()
@@ -61,8 +63,9 @@ class SanternoJsonDataGetter extends SqlRequest
             mysqli_stmt_execute($stmt);
             $result = mysqli_stmt_get_result($stmt);
 
-            if ($result === FALSE)
-                return FALSE;
+            if ($result === false) {
+                return false;
+            }
 
             while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
                 $devName = $row['dev_name'];
@@ -73,11 +76,10 @@ class SanternoJsonDataGetter extends SqlRequest
 
             mysqli_stmt_close($stmt);
 
-            if (! empty($rows))
+            if (! empty($rows)) {
                 return $rows;
+            }
         }
-        return FALSE;
+        return false;
     }
 }
-
-?>

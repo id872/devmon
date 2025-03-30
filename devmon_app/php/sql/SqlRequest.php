@@ -2,42 +2,51 @@
 
 class SqlRequest
 {
-
     const CONFIG_PATH = '../../../sql_db/db_config.ini';
 
-    protected $Connection = NULL;
+    protected $Connection = null;
 
-    protected $UserData = NULL;
+    protected $UserData = null;
 
     function __construct($userHash)
     {
         $this->Connection = $this->dbConnect();
 
-        if (! $this->Connection)
+        if (! $this->Connection) {
             exit(1);
+        }
 
         $this->UserData = $this->initializeUserData($userHash);
     }
 
     function __destruct()
     {
-        if ($this->Connection)
+        if ($this->Connection) {
             mysqli_close($this->Connection);
+        }
     }
 
     private function dbConnect()
     {
-        $config = parse_ini_file(self::CONFIG_PATH);
-        if ($config)
-            return mysqli_connect($config["servername"], $config["username"], $config["password"], $config["dbname"]);
+        $configPath = realpath(self::CONFIG_PATH);
+        if (!$configPath) {
+            echo "Not found";
+            return null;
+        }
 
-        return NULL;
+        $config = parse_ini_file($configPath);
+        if ($config) {
+            return mysqli_connect($config["servername"], $config["username"], $config["password"], $config["dbname"]);
+        }
+
+        return null;
     }
 
     private function initializeUserData($userHash)
     {
-        if ($userHash === NULL)
-            return NULL;
+        if ($userHash === null) {
+            return null;
+        }
 
         $query = "SELECT D.dev_name, D.device_id, U.user_name, U.user_id, U.user_password_hash, U.api_key FROM users U 
             LEFT JOIN devices D on (D.user_id = U.user_id) where INSTR(api_hash, ?) > 0";
@@ -48,8 +57,9 @@ class SqlRequest
 
             $result = mysqli_stmt_get_result($stmt);
 
-            if ($result === FALSE)
-                return NULL;
+            if ($result === false) {
+                return null;
+            }
 
             $rows = array();
 
@@ -59,20 +69,20 @@ class SqlRequest
 
             mysqli_stmt_close($stmt);
 
-            if (! empty($rows))
+            if (! empty($rows)) {
                 return $rows;
+            }
         }
 
-        return NULL;
+        return null;
     }
 
     protected function getUserData($key)
     {
-        if (is_array($this->UserData) && array_key_exists(0, $this->UserData) && array_key_exists($key, $this->UserData[0]))
+        if (is_array($this->UserData) && array_key_exists(0, $this->UserData) && array_key_exists($key, $this->UserData[0])) {
             return $this->UserData[0][$key];
+        }
 
-        return NULL;
+        return null;
     }
 }
-
-?>

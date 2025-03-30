@@ -2,7 +2,6 @@
 
 class ChartJSHelper
 {
-
     static $COLORS = array(
         array(
             'bgColor' => 'rgba(51, 102, 204, 0.2)',
